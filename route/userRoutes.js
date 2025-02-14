@@ -1,11 +1,15 @@
 const express = require("express")
 const router = express.Router()
-const registerUserController = require("../controllers/userController")
+const {registerUser, verifyEmail, loginController ,logoutController ,updateUserDetails,forgetPasswordController,resetPassword ,verifyForgetPasswordOtp } = require("../controllers/userController")
+const auth = require('../middleware/auth')
 
-
-router.post('/register',registerUserController.registerUser)
-router.post('/verify-email',registerUserController.verifyEmail)
-router.post('/login',registerUserController.loginController)
-
+router.post('/register',registerUser)
+router.post('/verify-email',verifyEmail)
+router.post('/login',loginController)
+router.get('/logout',auth,logoutController)
+router.put('/update-details',auth,updateUserDetails)
+router.put('/forget-password',forgetPasswordController)
+router.put('/reset-password',resetPassword)
+router.put('/verify-password',verifyForgetPasswordOtp)
 
 module.exports = router

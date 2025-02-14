@@ -22,7 +22,7 @@ app.use(helmet({
 }))
 app.use(errorHandler)
 
-const  PORT = process.env.PORT || 8000 ;
+const PORT = process.env.PORT || 6001 ;
 
 app.get("/",(req,res)=>{
     res.json({message:`${process.env.FRONTEND_URL}`})

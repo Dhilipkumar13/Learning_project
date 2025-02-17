@@ -207,7 +207,7 @@ const updateUserDetails = async(req ,res) => {
 const forgetPasswordController = async(req, res)=> {
     try {
 
-        const email = req.body
+        const {email} = req.body
 
         const user = await User.findOne({ email })
 
@@ -220,12 +220,16 @@ const forgetPasswordController = async(req, res)=> {
         }
 
         const otp = generateOtp()
-        const expireDate = new Date() + 60*60*1000
+        const expireDate = new Date(Date.now() + 60*60*1000)
 
-        const update = await User.findById(user._id,{
+        const update = await User.findByIdAndUpdate(user._id,{
             forget_password_otp:otp,
-            forget_password_expire: new Date(expireDate).toISOString
-        })
+            forget_password_expire: new Date(expireDate).toISOString()
+        },
+        { new:true}
+    )
+        console.log(update, " * ",otp," * ",expireDate)
+
 
         await sendEmail({
             sendTo : email,
@@ -275,6 +279,7 @@ const verifyForgetPasswordOtp = async (req, res) => {
         }
 
         const currentDate = new Date().toISOString
+        console.log(user)
 
         if(currentDate<user.forget_password_expire){
             return res.status(400).json({
@@ -344,9 +349,9 @@ const resetPassword = async (req, res) => {
         }
 
         const salt = await bcrypt.genSalt(10)
-        const hashedPassword = await bcrypt.hash(password,salt)
+        const hashedPassword = await bcrypt.hash(newPassword,salt)
 
-        const updateUser = await User.findByIdAndUpdate(user._id,{
+        await User.findByIdAndUpdate(user._id,{
             password: hashedPassword
         })
 

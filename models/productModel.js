@@ -6,16 +6,16 @@ const productSchema = mongoose.Schema({
     },image:{
         type:Array,
         default:[]
-    },category:[
+    },categoryId:[
         {
             type:mongoose.Schema.ObjectId,
-            ref:"category"
+            ref:"categorys"
         }
     ],
-    sub_category:[
+    subCategoryId:[
         {
             type:mongoose.Schema.ObjectId,
-            ref:"subCategory"
+            ref:"subCategorys"
         }
     ],
     unit:{
@@ -28,7 +28,8 @@ const productSchema = mongoose.Schema({
         type:Number
     },
     discount:{
-        type:Number
+        type:Number,
+        default:0
     },
     description:{
         type:String,

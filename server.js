@@ -28,6 +28,7 @@ app.get("/",(req,res)=>{
     res.json({message:`${process.env.FRONTEND_URL}`})
 })
 app.use("/api/user",require("./route/userRoutes"))
+app.use("/api/product",require("./route/productRouter"))
 
 app.listen(PORT,(req,res)=>{
     console.log("Server is running in port",PORT)

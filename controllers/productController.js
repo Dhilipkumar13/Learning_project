@@ -2,7 +2,7 @@ const ProductModel = require('../models/productModel');
 const CategoryModel = require('../models/categoryModel')
 const SubCategoryModel = require('../models/subCategoryModule')
 
-const uploadProduct = async (req, res) => {
+const createProduct = async (req, res) => {
     console.log("uploadProduct")
     try {
         const { name, categoryName, subCategoryName, price, discount, description } = req.body;
@@ -162,4 +162,90 @@ const createSubCategory = async (req, res) =>{
     }
 }
 
-module.exports = {uploadProduct, createSubCategory, createCategory}
+const updateProduct = async(req, res) =>{
+    console.log("updateProduct")
+    try {
+        const { name, newName, categoryName, newCategoryName, subCategoryName, newSubCategoryName, price, newPrice, discount, newDiscount, description, newDescription } = req.body;
+        
+        if(!name){
+            return res.status(400).json({
+                message: "Name not found",
+                error : true,
+                success : false
+            }) 
+        }
+
+        const product = await ProductModel.findOne({name})
+        if(!product){
+            return res.status(400).json({
+                message: "product not found",
+                error : true,
+                success : false
+            }) 
+        }
+
+        const updateProduct = await ProductModel.findByIdAndUpdate(product._id,{
+            ...(newName && {name : newName}),
+            ...(newCategoryName && {categoryName : newCategoryName}),
+            ...(newSubCategoryName && {subCategoryName : newSubCategoryName}),
+            ...(newPrice && {price : newPrice}),
+            ...(newDescription && {description : newDescription}),
+            ...(newDiscount && {discount : newDiscount})
+        })
+
+        return res.json({
+            message : " Successfully updated",
+            error : false,
+            success : true
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+            error : true,
+            success : false
+        }) 
+    }
+}
+
+const deleteProduct = async (req, res)=> {
+    console.log("deleteProduct")
+    try {
+        
+        const {name} = req.body
+        if(!name){
+            return res.status(400).json({
+                message: "Product name not found",
+                error : true,
+                success : false
+            })
+        }
+
+        const product = await ProductModel.findOne({name})
+        if(!product){
+            return res.status(400).json({
+                message: "product not found",
+                error : true,
+                success : false
+            })
+        }
+
+        await ProductModel.deleteOne(product._id)
+
+        return res.json({
+            message : "product successfullt deleted",
+            error : false,
+            success : true
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message,
+            error : true,
+            success : false
+        })
+    }
+}
+
+
+module.exports = {createProduct, createSubCategory, createCategory, updateProduct, deleteProduct}
